@@ -13,9 +13,9 @@ from motor import Documento, SimuladorImpressao
 st.set_page_config(page_title="Fila de Impressão", page_icon="🖨️", layout="wide", initial_sidebar_state="collapsed")
 
 ESTILOS = {
-    "NORMAL": {"titulo": "Operação normal", "cor": "#3B82C4", "leve": "#E8F2FD", "texto": "A impressora 2 está em standby."},
-    "PROVAS": {"titulo": "Semana de provas", "cor": "#D58C25", "leve": "#FFF2DC", "texto": "Fila elevada: as duas impressoras atendem pedidos."},
-    "URGENCIA": {"titulo": "Sobrecarga de urgência", "cor": "#D85454", "leve": "#FCEBEC", "texto": "A impressora 2 prioriza solicitações urgentes."},
+    "NORMAL": {"titulo": "Operação normal", "cor": "#80BDFF", "leve": "#1A3552", "texto": "A impressora 2 está em standby."},
+    "PROVAS": {"titulo": "Semana de provas", "cor": "#F7BB6F", "leve": "#402D1C", "texto": "Fila elevada: as duas impressoras atendem pedidos."},
+    "URGENCIA": {"titulo": "Sobrecarga de urgência", "cor": "#FF8D9B", "leve": "#432632", "texto": "A impressora 2 prioriza solicitações urgentes."},
 }
 
 
@@ -45,146 +45,241 @@ modo = ESTILOS[sim.estado]
 texto_estado = ("A impressora 2 foi ativada preventivamente para reduzir o risco de atraso."
                 if sim.estado == "NORMAL" and sim._apoio_preventivo else modo["texto"])
 
-st.markdown(f"""
-<style>
-:root {{--acento:{modo['cor']};--acento-claro:{modo['leve']};}}
-.stApp {{background: #F5F8FD; color:#20354D;}}
-.block-container {{max-width:1280px; padding-top:1.2rem; padding-bottom:2.5rem;}}
-#MainMenu, footer {{visibility:hidden;}}
-header[data-testid="stHeader"] {{background: transparent;}}
-section[data-testid="stSidebar"] {{background:#F4F8FD;}}
-.stButton>button, .stFormSubmitButton>button {{border-radius:10px; border:1px solid #D7E4F1; font-weight:600;}}
-.stButton>button[kind="primary"], .stFormSubmitButton>button[kind="primary"] {{background:#3278B7; color:white; border-color:#3278B7;}}
-div[data-testid="stMetric"] {{background:white;border:1px solid #DEE9F4;border-radius:14px;padding:13px 15px;}}
-div[data-testid="stMetricLabel"] {{color:#71849A;}}
-[data-testid="stVerticalBlockBorderWrapper"] {{border-radius:14px;}}
-.header-band {{display:flex; align-items:center; justify-content:space-between; gap:18px; padding:12px 16px; background:white; border:1px solid #DCE7F3; border-radius:15px; margin-bottom:14px;}}
-.brand {{display:flex; align-items:center; gap:16px; min-width:0;}}
-.logo-frame {{position:relative; display:flex; width:145px; height:48px; align-items:center;justify-content:center;border-right:1px solid #E1EAF3;padding-right:15px;}}
-.logo-oficial {{position:absolute; width:130px;height:42px;object-fit:contain;background:white;}}
-.logo-fallback {{color:#144B91;font-size:16px;font-weight:800;letter-spacing:.03em;}}
-.brand-title {{font-weight:800;font-size:22px;color:#1C466E;line-height:1.1;}}
-.brand-subtitle {{font-size:12px;color:#71849A;margin-top:4px;}}
-.clock {{text-align:right;flex-shrink:0;}}
-.clock-label {{color:#6B8096;font-size:11px;}}
-.clock-time {{color:#1A456E;font-weight:800;font-size:27px;font-variant-numeric:tabular-nums;line-height:1.1;}}
-.state-panel {{background:var(--acento-claro);border:1px solid var(--acento);border-left:5px solid var(--acento);padding:11px 15px;border-radius:12px;margin:2px 0 16px;}}
-.state-name {{font-weight:800;color:var(--acento);font-size:15px;}}
-.state-desc {{color:#4B5E70;font-size:12px;margin-top:3px;}}
-.section-name {{color:#20496F;font-size:18px;font-weight:750;margin:10px 0 9px;}}
-.section-sub {{color:#76889C;font-size:12px;margin:0 0 9px;}}
-.flow-grid {{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:3px 0 16px;}}
-.flow-step {{background:white;border:1px solid #DCE8F3;border-radius:11px;padding:11px 13px;}}
-.flow-step strong {{display:block;color:#254F78;font-size:20px;font-variant-numeric:tabular-nums;}}
-.flow-step span {{color:#71849A;font-size:12px;}}
-.printer-card {{min-height:188px;background:white;border:1px solid #D9E6F2;border-top:3px solid var(--acento);border-radius:14px;padding:16px;margin-bottom:6px;}}
-.printer-top {{display:flex;justify-content:space-between;gap:12px;align-items:center;}}
-.printer-name {{color:#234B72;font-weight:800;font-size:16px;}}
-.status {{font-size:11px;font-weight:700;color:#63809A;}}
-.status.printing {{color:#248366;}}
-.status.standby {{color:#98A5B5;}}
-.printer-doc {{color:#2B4B6B;font-weight:700;margin-top:18px;margin-bottom:3px;font-size:14px;word-break:break-word;}}
-.printer-meta {{font-size:12px;color:#7C8DA0;margin-top:3px;}}
-.progress-track {{width:100%;height:8px;background:#E8EFF6;border-radius:100px;margin-top:11px;overflow:hidden;}}
-.progress-fill {{height:100%;background:var(--acento);border-radius:100px;}}
-.printer-reason {{color:#8A9BAD;font-size:11px;margin-top:10px;}}
-.job-card {{background:white;border:1px solid #D9E6F2;border-left:3px solid #7CABD4;padding:10px 12px;border-radius:11px;margin-bottom:6px;}}
-.job-card.urgent {{border-left-color:#E3A143;}}
-.job-card.overdue {{border-left-color:#D75B5B;}}
-.job-top {{display:flex;align-items:center;justify-content:space-between;gap:6px;}}
-.job-title {{font-size:13px;font-weight:750;color:#294B6B;overflow-wrap:anywhere;}}
-.job-meta {{color:#7C8FA3;font-size:11px;margin-top:4px;}}
-.job-tag {{color:#68819B;font-size:10px;background:#EDF3FA;border-radius:99px;padding:3px 8px;white-space:nowrap;}}
-.job-tag.urgent {{background:#FFF0DC;color:#A66C23;}}
-.job-tag.overdue {{background:#FCE7E7;color:#B94F4F;}}
-.number {{font-weight:850;color:#3476B8;margin-right:8px;}}
-.empty-card {{background:white;border:1px dashed #CBDDEB;border-radius:12px;padding:20px 13px;color:#8A9BAD;text-align:center;font-size:13px;}}
-.small-note {{color:#8796A8;font-size:11px;margin:5px 0 12px;}}
-.done-card {{background:white;border:1px solid #D9E6F2;border-left:3px solid #67B39A;border-radius:11px;padding:12px 14px;margin:4px 0;}}
-.done-title {{color:#294B6B;font-weight:750;font-size:13px;overflow-wrap:anywhere;}}
-.done-meta {{color:#8190A1;font-size:11px;margin-top:4px;}}
-.done-bad {{color:#BC5353;}}
-.done-good {{color:#248366;}}
-.forecast-box {{background:#FFFFFF;border:1px solid #DDE8F3;border-radius:12px;padding:11px 13px;margin:10px 0 8px;}}
-.forecast-box.risk {{border-left:3px solid #D89A3A;}}
-.forecast-box.safe {{border-left:3px solid #67B39A;}}
-.forecast-title {{color:#234B72;font-size:13px;font-weight:750;}}
-.forecast-description {{color:#7C8FA3;font-size:11px;margin-top:5px;line-height:1.4;}}
-.preventive-note {{color:#356F9D;font-size:12px;margin-top:7px;}}
-
-/* Controles do Streamlit: contraste consistente em temas claro ou escuro. */
-.stApp button[data-testid^="stBaseButton"],
-.stApp div.stButton > button,
-.stApp div.stFormSubmitButton > button,
-.stApp div.stDownloadButton > button,
-.stApp div[data-testid="stPopover"] > button {{
-  background-color: #FFFFFF !important;
-  color: #24547D !important;
-  border: 1px solid #C9DAEC !important;
-  border-radius: 10px !important;
-  box-shadow: 0 1px 2px rgba(23, 66, 112, .04) !important;
-}}
-.stApp button[data-testid^="stBaseButton"] *,
-.stApp div.stButton > button *,
-.stApp div.stFormSubmitButton > button *,
-.stApp div.stDownloadButton > button * {{
-  color: inherit !important;
-}}
-.stApp button[data-testid^="stBaseButton"]:hover:not(:disabled),
-.stApp div.stButton > button:hover:not(:disabled),
-.stApp div.stFormSubmitButton > button:hover:not(:disabled) {{
-  background-color: #E7F2FD !important;
-  color: #164E7B !important;
-  border-color: #8EB6DB !important;
-}}
-.stApp button[data-testid="stBaseButton-primary"],
-.stApp div.stButton > button[kind="primary"],
-.stApp div.stFormSubmitButton > button[kind="primary"] {{
-  background-color: #3278B7 !important;
-  border-color: #3278B7 !important;
-  color: #FFFFFF !important;
-}}
-.stApp button[data-testid="stBaseButton-primary"]:hover:not(:disabled),
-.stApp div.stButton > button[kind="primary"]:hover:not(:disabled),
-.stApp div.stFormSubmitButton > button[kind="primary"]:hover:not(:disabled) {{
-  background-color: #24659E !important;
-  border-color: #24659E !important;
-  color: #FFFFFF !important;
-}}
-.stApp button[data-testid^="stBaseButton"]:disabled,
-.stApp div.stButton > button:disabled,
-.stApp div.stFormSubmitButton > button:disabled {{
-  background-color: #EEF3F8 !important;
-  border-color: #DCE6F1 !important;
-  color: #95A5B6 !important;
-  opacity: 1 !important;
-  cursor: not-allowed;
-}}
-/* Campos do formulário também ficam legíveis se o visitante estiver no modo escuro. */
-.stApp div[data-baseweb="input"],
-.stApp div[data-baseweb="select"] > div,
-.stApp div[data-baseweb="textarea"] {{
-  background-color: #FFFFFF !important;
-  color: #20354D !important;
-}}
-.stApp div[data-baseweb="input"] input,
-.stApp div[data-baseweb="textarea"] textarea {{
-  color: #20354D !important;
-}}
-.stApp div[data-baseweb="select"] * {{
-  color: #20354D !important;
-}}
-
-@media (max-width: 750px) {{
- .brand-title {{font-size:17px;}}
- .logo-frame {{width:95px;padding-right:8px;}}
- .logo-oficial {{width:85px;}}
- .brand {{gap:9px;}}
- .clock-time {{font-size:21px;}}
- .flow-grid {{grid-template-columns:repeat(2,minmax(0,1fr));}}
-}}
-</style>
-""", unsafe_allow_html=True)
+# CSS isolado da lógica: paleta escura coerente para todos os componentes.
+CSS_TEMA = r"""
+/* Fila de Impressão · identidade nocturna azul-petróleo · v1.2 */
+:root {
+  color-scheme: dark;
+  --bg: #0B1628;
+  --surface: #14253B;
+  --surface-raised: #182D46;
+  --surface-hover: #203A57;
+  --border: #304B68;
+  --border-soft: #263D57;
+  --text: #EAF3FE;
+  --text-soft: #C0D2E5;
+  --muted: #A4B9D1;
+  --dim: #8FA7C2;
+  --blue: #83C1FF;
+  --blue-strong: #54A8F1;
+  --green: #71D8B9;
+  --orange: #F7BF75;
+  --red: #FF8FA2;
+  --state: __STATE_COLOR__;
+  --state-soft: __STATE_SOFT__;
+}
+html, body, [data-testid="stAppViewContainer"], .stApp {
+  background: #0B1628 !important;
+  color: var(--text);
+}
+.stApp {
+  background-image: radial-gradient(ellipse 1000px 550px at 48% -200px, #1B3857 0%, #0B1628 70%) !important;
+  color: var(--text);
+}
+.block-container {max-width: 1240px; padding: 1.15rem 2rem 3.3rem;}
+#MainMenu, footer {visibility: hidden;}
+header[data-testid="stHeader"] {background: transparent !important;}
+section[data-testid="stSidebar"] {background: #101E31 !important;}
+.stApp p, .stApp label {color: var(--text-soft);}
+.stApp h1, .stApp h2, .stApp h3 {color: var(--text);}
+.stApp hr {border-color: var(--border-soft);}
+.stApp a {color: var(--blue);}
+.stApp a:hover {color: #B6DCFF;}
+/* Componentes próprios */
+.header-band {
+  display: flex; align-items: center; justify-content: space-between; gap: 18px;
+  padding: 13px 18px; border-radius: 17px;
+  background: linear-gradient(115deg, #1B314C, #12253B 75%);
+  border: 1px solid #365475; box-shadow: 0 9px 28px rgba(1,10,20,.18);
+  margin-bottom: 14px;
+}
+.brand {display:flex; align-items:center; gap:16px; min-width:0;}
+.logo-frame {
+  position:relative; display:flex; width:146px; height:52px;
+  align-items:center; justify-content:center; border-radius:10px;
+  background: #F6F9FF; flex-shrink:0; padding:5px 10px;
+}
+.logo-oficial {position:absolute; inset:5px 10px; width:calc(100% - 20px); height:calc(100% - 10px); object-fit:contain;}
+.logo-fallback {color:#164B8B; font-size:17px; font-weight:850; letter-spacing:.02em;}
+.brand-title {font-weight:800; font-size:22px; color:var(--text); line-height:1.1; letter-spacing:-.035em;}
+.brand-subtitle {font-size:12px; color:var(--muted); margin-top:5px;}
+.clock {text-align:right; flex-shrink:0;}
+.clock-label {color:var(--muted); font-size:10px; letter-spacing:.07em; text-transform:uppercase;}
+.clock-time {color:#D9EDFF; font-weight:800; font-size:28px; font-variant-numeric:tabular-nums;line-height:1.1; margin-top:4px;}
+.state-panel {
+  background:linear-gradient(100deg, var(--state-soft), #14253B 88%);
+  border:1px solid var(--state); border-left:4px solid var(--state);
+  border-radius:12px; padding:12px 15px; margin:3px 0 16px;
+}
+.state-name {font-weight:800; color:var(--state); font-size:14px; letter-spacing:.01em;}
+.state-desc {color:var(--text-soft); font-size:12px; margin-top:4px; line-height:1.45;}
+.section-name {color:var(--text);font-size:17px;font-weight:760;margin:11px 0 9px;letter-spacing:-.02em;}
+.section-sub {color:var(--muted);font-size:12px;margin:0 0 10px;line-height:1.5;}
+.flow-grid {display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:11px;margin:4px 0 18px;}
+.flow-step {
+  background: linear-gradient(145deg, #1A304A, #14253B);
+  border:1px solid var(--border-soft); border-radius:12px; padding:13px 16px;
+  position:relative; overflow:hidden;
+}
+.flow-step:before {content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--state),transparent);opacity:.8;}
+.flow-step strong {display:block; color:#F0F7FE; font-size:25px; font-variant-numeric:tabular-nums; line-height:1.2;}
+.flow-step span {display:block; color:var(--muted);font-size:12px;margin-top:5px;}
+.printer-card {
+  min-height:168px; background:linear-gradient(150deg,#1A304B,#14263D);
+  border:1px solid var(--border);border-top:3px solid var(--state);
+  border-radius:15px;padding:16px 17px;margin:2px 0 8px;
+  box-shadow: 0 6px 22px rgba(0,0,0,.1);
+}
+.printer-top {display:flex;justify-content:space-between;align-items:center;gap:12px;}
+.printer-name {color:var(--text);font-size:15px;font-weight:780; display:flex;align-items:center;gap:8px;}
+.printer-icon {display:inline-flex;color:var(--state);opacity:.95;}
+.printer-icon svg {width:19px;height:19px;}
+.status {font-size:10px;font-weight:800;letter-spacing:.05em;color:var(--muted);white-space:nowrap;}
+.status.printing {color:var(--green);}
+.status.standby {color:var(--dim);}
+.printer-doc {color:var(--text);font-weight:700;font-size:14px;margin-top:17px;margin-bottom:4px;overflow-wrap:anywhere;}
+.printer-meta {color:var(--muted);font-size:12px;margin-top:5px;}
+.printer-reason {color:var(--dim);font-size:11px;margin-top:10px;}
+.progress-track {width:100%;height:8px;background:#0B192B;border:1px solid #294663;border-radius:99px;margin-top:14px;overflow:hidden;}
+.progress-fill {height:100%;background:var(--state);border-radius:99px;transition:width .22s ease;}
+.job-card {
+  background:linear-gradient(130deg,#1B304A,#172940);
+  border:1px solid var(--border-soft);border-left:3px solid #6DB6F8;
+  border-radius:11px;padding:11px 13px;margin-bottom:7px;
+}
+.job-card.urgent {border-left-color:var(--orange);}
+.job-card.overdue {border-left-color:var(--red);background:#2A283A;}
+.job-top {display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.job-title {color:var(--text);font-size:13px;font-weight:740;overflow-wrap:anywhere;line-height:1.3;}
+.job-meta {color:var(--muted);font-size:11px;margin-top:6px;line-height:1.5;}
+.job-tag {color:#ABD6FF;background:#213D5A;border:1px solid #315777;border-radius:100px;padding:3px 8px;font-size:10px;font-weight:700;white-space:nowrap;}
+.job-tag.urgent {color:#FFCF90;background:#49351E;border-color:#7A562B;}
+.job-tag.overdue {color:#FFC0CA;background:#512D39;border-color:#884956;}
+.number {color:#8BC7FF;font-weight:850;margin-right:10px;font-variant-numeric:tabular-nums;}
+.empty-card {background:#12233A;border:1px dashed #36526F;border-radius:12px;padding:22px 14px;color:var(--muted);text-align:center;font-size:12px;line-height:1.6;}
+.small-note {color:var(--muted);font-size:11px;margin:7px 0 13px;line-height:1.5;}
+.done-card {background:linear-gradient(145deg,#1A3047,#14263B);border:1px solid var(--border-soft);border-left:3px solid var(--green);border-radius:12px;padding:13px 15px;margin:5px 0;min-height:98px;}
+.done-title {color:var(--text);font-weight:740;font-size:13px;overflow-wrap:anywhere;}
+.done-meta {color:var(--muted);font-size:11px;margin-top:6px;line-height:1.45;}
+.done-bad {color:var(--red);}
+.done-good {color:var(--green);}
+.forecast-box {background:#182C44;border:1px solid var(--border-soft);border-radius:12px;padding:12px 14px;margin:10px 0 8px;}
+.forecast-box.risk {border-left:3px solid var(--orange);}
+.forecast-box.safe {border-left:3px solid var(--green);}
+.forecast-title {color:var(--text);font-size:13px;font-weight:760;}
+.forecast-description {color:var(--muted);font-size:11px;margin-top:6px;line-height:1.5;}
+.preventive-note {color:#A5D6FF;font-size:12px;margin-top:8px;}
+/* Componentes nativos Streamlit. Um tema escuro real, não só cartões escuros. */
+.stApp [data-testid="stVerticalBlockBorderWrapper"] > div:has(> [data-testid="stVerticalBlock"]) {border-radius:13px;}
+.stApp [data-testid="stMetric"] {
+  background:#182D45; border:1px solid var(--border-soft); border-radius:12px;
+  padding:11px 12px;
+}
+.stApp [data-testid="stMetricLabel"] p {color:var(--muted) !important;font-size:12px;}
+.stApp [data-testid="stMetricValue"] {color:var(--text) !important;}
+.stApp [data-testid="stExpander"] {
+  background:#14263D !important;border:1px solid var(--border) !important;
+  border-radius:12px !important;overflow:hidden;
+}
+.stApp [data-testid="stExpander"] summary, .stApp [data-testid="stExpander"] summary p {color:var(--text-soft) !important;}
+.stApp [data-testid="stExpander"] summary:hover {background:#1C3450;}
+.stApp [data-testid="stForm"] {background:#14263D;border:1px solid var(--border) !important;border-radius:13px;padding:12px;}
+/* Botões: padrão deliberadamente claro sobre escuro, sem vazamentos pretos. */
+.stApp .stButton button,
+.stApp .stFormSubmitButton button,
+.stApp .stDownloadButton button,
+.stApp [data-testid="stPopover"] > button,
+.stApp button[data-testid^="stBaseButton"] {
+  background:#1C3550 !important;
+  color:#F0F7FF !important;
+  border:1px solid #426180 !important;
+  border-radius:10px !important;
+  box-shadow:none !important;
+  font-weight:650 !important;
+  min-height:40px;
+  transition:background .15s ease,border-color .15s ease;
+}
+.stApp .stButton button *, .stApp .stFormSubmitButton button *,
+.stApp .stDownloadButton button *, .stApp [data-testid="stPopover"] > button *,
+.stApp button[data-testid^="stBaseButton"] * {color:inherit !important;}
+.stApp .stButton button:hover:not(:disabled),
+.stApp .stFormSubmitButton button:hover:not(:disabled),
+.stApp .stDownloadButton button:hover:not(:disabled),
+.stApp [data-testid="stPopover"] > button:hover:not(:disabled),
+.stApp button[data-testid^="stBaseButton"]:hover:not(:disabled) {
+  background:#284766 !important;color:#FFFFFF !important;border-color:#76B5ED !important;
+}
+.stApp .stButton button:focus-visible,
+.stApp .stFormSubmitButton button:focus-visible,
+.stApp [data-testid="stPopover"] > button:focus-visible {outline:2px solid #8AC9FF; outline-offset:2px;}
+.stApp .stButton button:active:not(:disabled),
+.stApp .stFormSubmitButton button:active:not(:disabled) {background:#305778 !important;}
+.stApp .stButton button[kind="primary"],
+.stApp .stFormSubmitButton button[kind="primary"],
+.stApp button[data-testid="stBaseButton-primary"] {
+  background:#69B5F5 !important;color:#071728 !important;border-color:#69B5F5 !important;
+}
+.stApp .stButton button[kind="primary"]:hover:not(:disabled),
+.stApp .stFormSubmitButton button[kind="primary"]:hover:not(:disabled),
+.stApp button[data-testid="stBaseButton-primary"]:hover:not(:disabled) {
+  background:#9AD1FF !important;color:#071728 !important;border-color:#9AD1FF !important;
+}
+.stApp .stButton button:disabled,
+.stApp .stFormSubmitButton button:disabled,
+.stApp button[data-testid^="stBaseButton"]:disabled {
+  background:#17293F !important;color:#7F98B2 !important;border-color:#2A4057 !important;opacity:1 !important;cursor:not-allowed;
+}
+/* O único popover do sistema é o reinício: aviso discreto de ação destrutiva. */
+.stApp [data-testid="stPopover"] > button {
+  background:#352738 !important; color:#FFC0CB !important;
+  border-color:#815367 !important;
+}
+.stApp [data-testid="stPopover"] > button:hover:not(:disabled) {
+  background:#492E42 !important; color:#FFDBE1 !important;
+  border-color:#C17E96 !important;
+}
+/* Inputs, seletores, popovers e tabelas seguem a mesma paleta. */
+.stApp [data-baseweb="input"],
+.stApp [data-baseweb="textarea"],
+.stApp [data-baseweb="select"] > div,
+.stApp [data-baseweb="popover"] {
+  background-color:#1A3049 !important;color:var(--text) !important;border-color:#40607C !important;
+}
+.stApp [data-baseweb="input"] input,
+.stApp [data-baseweb="textarea"] textarea,
+.stApp [data-baseweb="select"] input,
+.stApp [data-baseweb="select"] span {color:var(--text) !important;-webkit-text-fill-color:var(--text) !important;}
+.stApp [data-baseweb="input"] input::placeholder,
+.stApp [data-baseweb="textarea"] textarea::placeholder {color:#8CA5BF !important;-webkit-text-fill-color:#8CA5BF !important;}
+.stApp [data-testid="stNumberInput"] button {background:#1A3049 !important;color:var(--text-soft) !important;border-color:#40607C !important;}
+.stApp [data-testid="stSelectbox"] label p,
+.stApp [data-testid="stTextInput"] label p,
+.stApp [data-testid="stNumberInput"] label p {color:var(--text-soft) !important;font-weight:550;}
+.stApp [data-testid="stDataFrame"] {border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.stApp [data-testid="stTabs"] button {color:var(--muted) !important;}
+.stApp [data-testid="stTabs"] button[aria-selected="true"] {color:var(--blue) !important;border-bottom-color:var(--blue) !important;}
+.stApp [data-testid="stMarkdownContainer"] code {background:#1C3550;color:#C6E5FF;}
+/* Acessibilidade e telas menores. */
+@media (max-width: 850px) {
+  .block-container {padding-left:1.15rem;padding-right:1.15rem;}
+  .brand-title {font-size:19px;}
+  .logo-frame {width:108px;height:43px;}
+  .brand {gap:10px;}
+  .clock-time {font-size:23px;}
+  .flow-grid {grid-template-columns:repeat(2,minmax(0,1fr));}
+}
+@media (max-width: 520px) {
+  .header-band {padding:12px;gap:9px;}
+  .brand-subtitle {font-size:10px;}
+  .brand-title {font-size:17px;}
+  .logo-frame {width:85px;height:39px;padding:4px;}
+  .logo-oficial {inset:4px;width:calc(100% - 8px);height:calc(100% - 8px);}
+  .clock-label {font-size:8px;}
+  .clock-time {font-size:20px;}
+  .flow-step {padding:11px;}
+}
+"""
+st.markdown("<style>" + CSS_TEMA.replace("__STATE_COLOR__", modo["cor"]).replace("__STATE_SOFT__", modo["leve"]) + "</style>", unsafe_allow_html=True)
 
 st.markdown(f"""
 <div class="header-band">
@@ -232,17 +327,24 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
+ICONE_IMPRESSORA = (
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" '
+    'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
+    '<path d="M6 9V3h12v6M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>'
+    '<path d="M6 15h12v6H6zM18 12h.01"/></svg>'
+)
+
 st.markdown('<div class="section-name">Impressoras</div>', unsafe_allow_html=True)
 colunas_imp = st.columns(2, gap="medium")
 for n, coluna in enumerate(colunas_imp, 1):
     imp = sim.impressoras[n]
     estado_imp = sim.status_impressora(n)
     if estado_imp == "STANDBY":
-        conteudo = '<div class="printer-doc" style="color:#99A8B8">Em espera</div><div class="printer-meta">Ativa automaticamente quando a demanda aumenta.</div>'
+        conteudo = '<div class="printer-doc">Em espera</div><div class="printer-meta">Ativa automaticamente quando a demanda aumenta.</div>'
         situacao = 'STANDBY'
         classe = 'standby'
     elif imp.documento_id is None:
-        conteudo = '<div class="printer-doc" style="color:#7C95AC">Disponível</div><div class="printer-meta">Aguardando próximo pedido</div>'
+        conteudo = '<div class="printer-doc">Disponível</div><div class="printer-meta">Aguardando próximo pedido</div>'
         situacao = 'DISPONÍVEL'
         classe = ''
     else:
@@ -262,12 +364,12 @@ for n, coluna in enumerate(colunas_imp, 1):
         nome_imp = 'Impressora 2 · Preventiva'
     else:
         nome_imp = f'Impressora {n}'
-    coluna.markdown(f'<div class="printer-card"><div class="printer-top"><div class="printer-name">▣ {seguro(nome_imp)}</div>'
+    coluna.markdown(f'<div class="printer-card"><div class="printer-top"><div class="printer-name"><span class="printer-icon">{ICONE_IMPRESSORA}</span> {seguro(nome_imp)}</div>'
                    f'<div class="status {classe}">● {situacao}</div></div>{conteudo}</div>', unsafe_allow_html=True)
 
 area_principal, area_lateral = st.columns([1.75, 1], gap="large")
 with area_principal:
-    st.markdown(f'<div class="section-name">Fila de espera <span style="color:#8D9DAC;font-size:13px;font-weight:500">· {len(sim.fila)} documentos</span></div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="section-name">Fila de espera <span style="color:var(--muted);font-size:13px;font-weight:500">· {len(sim.fila)} documentos</span></div>', unsafe_allow_html=True)
     st.markdown('<div class="section-sub">Maior prioridade → menos páginas → chegada mais antiga → ID</div>', unsafe_allow_html=True)
     with st.container(height=390, border=False):
         fila = sim.fila_ordenada()
