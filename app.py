@@ -34,7 +34,7 @@ def cabecalho_logo() -> str:
         src = f"data:image/png;base64,{dados}"
     else:
         # URL de imagem institucional oficial; para uso offline, salve a logo em assets/logo_unifacs.png.
-        src = "https://landing.unifacs.br/assets/img/og/og-image-unifacs.png"
+        src = "https://www.unifacs.br/assets/img/logo-unifacs.svg"
     return f'<span class="logo-fallback">UNIFACS</span><img class="logo-oficial" alt="Logo da UNIFACS" src="{src}">'
 
 
@@ -111,6 +111,69 @@ div[data-testid="stMetricLabel"] {{color:#71849A;}}
 .forecast-title {{color:#234B72;font-size:13px;font-weight:750;}}
 .forecast-description {{color:#7C8FA3;font-size:11px;margin-top:5px;line-height:1.4;}}
 .preventive-note {{color:#356F9D;font-size:12px;margin-top:7px;}}
+
+/* Controles do Streamlit: contraste consistente em temas claro ou escuro. */
+.stApp button[data-testid^="stBaseButton"],
+.stApp div.stButton > button,
+.stApp div.stFormSubmitButton > button,
+.stApp div.stDownloadButton > button,
+.stApp div[data-testid="stPopover"] > button {{
+  background-color: #FFFFFF !important;
+  color: #24547D !important;
+  border: 1px solid #C9DAEC !important;
+  border-radius: 10px !important;
+  box-shadow: 0 1px 2px rgba(23, 66, 112, .04) !important;
+}}
+.stApp button[data-testid^="stBaseButton"] *,
+.stApp div.stButton > button *,
+.stApp div.stFormSubmitButton > button *,
+.stApp div.stDownloadButton > button * {{
+  color: inherit !important;
+}}
+.stApp button[data-testid^="stBaseButton"]:hover:not(:disabled),
+.stApp div.stButton > button:hover:not(:disabled),
+.stApp div.stFormSubmitButton > button:hover:not(:disabled) {{
+  background-color: #E7F2FD !important;
+  color: #164E7B !important;
+  border-color: #8EB6DB !important;
+}}
+.stApp button[data-testid="stBaseButton-primary"],
+.stApp div.stButton > button[kind="primary"],
+.stApp div.stFormSubmitButton > button[kind="primary"] {{
+  background-color: #3278B7 !important;
+  border-color: #3278B7 !important;
+  color: #FFFFFF !important;
+}}
+.stApp button[data-testid="stBaseButton-primary"]:hover:not(:disabled),
+.stApp div.stButton > button[kind="primary"]:hover:not(:disabled),
+.stApp div.stFormSubmitButton > button[kind="primary"]:hover:not(:disabled) {{
+  background-color: #24659E !important;
+  border-color: #24659E !important;
+  color: #FFFFFF !important;
+}}
+.stApp button[data-testid^="stBaseButton"]:disabled,
+.stApp div.stButton > button:disabled,
+.stApp div.stFormSubmitButton > button:disabled {{
+  background-color: #EEF3F8 !important;
+  border-color: #DCE6F1 !important;
+  color: #95A5B6 !important;
+  opacity: 1 !important;
+  cursor: not-allowed;
+}}
+/* Campos do formulário também ficam legíveis se o visitante estiver no modo escuro. */
+.stApp div[data-baseweb="input"],
+.stApp div[data-baseweb="select"] > div,
+.stApp div[data-baseweb="textarea"] {{
+  background-color: #FFFFFF !important;
+  color: #20354D !important;
+}}
+.stApp div[data-baseweb="input"] input,
+.stApp div[data-baseweb="textarea"] textarea {{
+  color: #20354D !important;
+}}
+.stApp div[data-baseweb="select"] * {{
+  color: #20354D !important;
+}}
 
 @media (max-width: 750px) {{
  .brand-title {{font-size:17px;}}
