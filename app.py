@@ -35,7 +35,9 @@ def cabecalho_logo() -> str:
     else:
         # URL de imagem institucional oficial; para uso offline, salve a logo em assets/logo_unifacs.png.
         src = "https://www.unifacs.br/assets/img/logo-unifacs.svg"
-    return f'<span class="logo-fallback">UNIFACS</span><img class="logo-oficial" alt="Logo da UNIFACS" src="{src}">'
+    # Não misturar texto de fallback e imagem na mesma área: a sobreposição
+    # deixava a logo ilegível no navegador publicado.
+    return f'<img class="logo-oficial" alt="UNIFACS" src="{src}">'
 
 
 if "simulador" not in st.session_state:
@@ -47,236 +49,212 @@ texto_estado = ("A impressora 2 foi ativada preventivamente para reduzir o risco
 
 # CSS isolado da lógica: paleta escura coerente para todos os componentes.
 CSS_TEMA = r"""
-/* Fila de Impressão · identidade nocturna azul-petróleo · v1.2 */
+/* Fila de Impressão — visual azul-noturno v1.3
+   O tema nativo fica em .streamlit/config.toml; este CSS estiliza
+   o dashboard e poucos controles específicos. */
 :root {
   color-scheme: dark;
-  --bg: #0B1628;
-  --surface: #14253B;
-  --surface-raised: #182D46;
-  --surface-hover: #203A57;
-  --border: #304B68;
-  --border-soft: #263D57;
-  --text: #EAF3FE;
-  --text-soft: #C0D2E5;
-  --muted: #A4B9D1;
-  --dim: #8FA7C2;
-  --blue: #83C1FF;
-  --blue-strong: #54A8F1;
-  --green: #71D8B9;
+  --bg: #0A1424;
+  --surface: #142640;
+  --surface-raised: #192E49;
+  --border: #2E4967;
+  --border-soft: #263F5D;
+  --text: #F1F7FF;
+  --text-soft: #D0DEEF;
+  --muted: #AEC0D6;
+  --dim: #99ADC5;
+  --blue: #89C7FF;
+  --blue-strong: #5EAEF6;
+  --green: #78E1C2;
   --orange: #F7BF75;
-  --red: #FF8FA2;
+  --red: #FF97A7;
   --state: __STATE_COLOR__;
   --state-soft: __STATE_SOFT__;
 }
 html, body, [data-testid="stAppViewContainer"], .stApp {
-  background: #0B1628 !important;
+  background: var(--bg) !important;
   color: var(--text);
 }
 .stApp {
-  background-image: radial-gradient(ellipse 1000px 550px at 48% -200px, #1B3857 0%, #0B1628 70%) !important;
-  color: var(--text);
+  background-image: radial-gradient(ellipse 960px 430px at 30% -180px, #1C3553 0%, #0A1424 76%) !important;
 }
-.block-container {max-width: 1240px; padding: 1.15rem 2rem 3.3rem;}
+/* A barra administrativa do Community Cloud fica sobre o canto superior direito.
+   Mantemos folga em cima para ela não cobrir o relógio. */
+.block-container {max-width: 1280px; padding: 3.6rem 1.75rem 3.2rem !important;}
 #MainMenu, footer {visibility: hidden;}
-header[data-testid="stHeader"] {background: transparent !important;}
-section[data-testid="stSidebar"] {background: #101E31 !important;}
-.stApp p, .stApp label {color: var(--text-soft);}
-.stApp h1, .stApp h2, .stApp h3 {color: var(--text);}
-.stApp hr {border-color: var(--border-soft);}
-.stApp a {color: var(--blue);}
-.stApp a:hover {color: #B6DCFF;}
-/* Componentes próprios */
+header[data-testid="stHeader"] {background:transparent !important;}
+section[data-testid="stSidebar"] {background:#0E1D32 !important;}
+.stApp h1, .stApp h2, .stApp h3 {color:var(--text);}
+.stApp a {color:var(--blue);}
+.stApp a:hover {color:#C1E4FF;}
+.stApp hr {border-color:var(--border-soft);}
+
+/* Marca, relógio e banner operacional */
 .header-band {
-  display: flex; align-items: center; justify-content: space-between; gap: 18px;
-  padding: 13px 18px; border-radius: 17px;
-  background: linear-gradient(115deg, #1B314C, #12253B 75%);
-  border: 1px solid #365475; box-shadow: 0 9px 28px rgba(1,10,20,.18);
-  margin-bottom: 14px;
+  display:flex; align-items:center; justify-content:space-between; gap:24px;
+  padding:17px 21px; border-radius:16px;
+  background:linear-gradient(110deg, #192F4B 0%, #14253D 84%);
+  border:1px solid #345270; box-shadow:0 12px 28px rgba(0,8,22,.16);
+  margin:0 0 14px;
 }
-.brand {display:flex; align-items:center; gap:16px; min-width:0;}
+.brand {display:flex; align-items:center;gap:17px;min-width:0;}
 .logo-frame {
-  position:relative; display:flex; width:146px; height:52px;
-  align-items:center; justify-content:center; border-radius:10px;
-  background: #F6F9FF; flex-shrink:0; padding:5px 10px;
+  width:155px;height:58px;display:flex;align-items:center;justify-content:center;
+  padding:7px 13px; border-radius:11px;background:#FFFFFF;flex-shrink:0;
 }
-.logo-oficial {position:absolute; inset:5px 10px; width:calc(100% - 20px); height:calc(100% - 10px); object-fit:contain;}
-.logo-fallback {color:#164B8B; font-size:17px; font-weight:850; letter-spacing:.02em;}
-.brand-title {font-weight:800; font-size:22px; color:var(--text); line-height:1.1; letter-spacing:-.035em;}
-.brand-subtitle {font-size:12px; color:var(--muted); margin-top:5px;}
-.clock {text-align:right; flex-shrink:0;}
-.clock-label {color:var(--muted); font-size:10px; letter-spacing:.07em; text-transform:uppercase;}
-.clock-time {color:#D9EDFF; font-weight:800; font-size:28px; font-variant-numeric:tabular-nums;line-height:1.1; margin-top:4px;}
+.logo-oficial {display:block;object-fit:contain;width:100%;max-height:44px;}
+.brand-title {font-size:25px;font-weight:790;line-height:1.12;letter-spacing:-.035em;color:var(--text);}
+.brand-subtitle {font-size:13px;color:var(--muted);margin-top:6px;line-height:1.3;}
+.clock {text-align:right;flex-shrink:0;min-width:130px;}
+.clock-label {font-size:11px;color:var(--muted);letter-spacing:.04em;text-transform:uppercase;}
+.clock-time {font-size:31px;font-weight:800;line-height:1.06;letter-spacing:-.025em;margin-top:5px;color:#EFF8FF;font-variant-numeric:tabular-nums;}
 .state-panel {
-  background:linear-gradient(100deg, var(--state-soft), #14253B 88%);
-  border:1px solid var(--state); border-left:4px solid var(--state);
-  border-radius:12px; padding:12px 15px; margin:3px 0 16px;
+  border-radius:12px;padding:13px 17px;margin:1px 0 17px;
+  background:linear-gradient(110deg,var(--state-soft),#13243A 88%);
+  border:1px solid #3A536E;border-left:4px solid var(--state);
 }
-.state-name {font-weight:800; color:var(--state); font-size:14px; letter-spacing:.01em;}
-.state-desc {color:var(--text-soft); font-size:12px; margin-top:4px; line-height:1.45;}
-.section-name {color:var(--text);font-size:17px;font-weight:760;margin:11px 0 9px;letter-spacing:-.02em;}
-.section-sub {color:var(--muted);font-size:12px;margin:0 0 10px;line-height:1.5;}
-.flow-grid {display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:11px;margin:4px 0 18px;}
-.flow-step {
-  background: linear-gradient(145deg, #1A304A, #14253B);
-  border:1px solid var(--border-soft); border-radius:12px; padding:13px 16px;
-  position:relative; overflow:hidden;
-}
-.flow-step:before {content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--state),transparent);opacity:.8;}
-.flow-step strong {display:block; color:#F0F7FE; font-size:25px; font-variant-numeric:tabular-nums; line-height:1.2;}
-.flow-step span {display:block; color:var(--muted);font-size:12px;margin-top:5px;}
-.printer-card {
-  min-height:168px; background:linear-gradient(150deg,#1A304B,#14263D);
-  border:1px solid var(--border);border-top:3px solid var(--state);
-  border-radius:15px;padding:16px 17px;margin:2px 0 8px;
-  box-shadow: 0 6px 22px rgba(0,0,0,.1);
-}
-.printer-top {display:flex;justify-content:space-between;align-items:center;gap:12px;}
-.printer-name {color:var(--text);font-size:15px;font-weight:780; display:flex;align-items:center;gap:8px;}
-.printer-icon {display:inline-flex;color:var(--state);opacity:.95;}
-.printer-icon svg {width:19px;height:19px;}
-.status {font-size:10px;font-weight:800;letter-spacing:.05em;color:var(--muted);white-space:nowrap;}
+.state-name {font-size:16px;font-weight:760;color:var(--state);line-height:1.35;}
+.state-desc {font-size:13px;line-height:1.55;color:var(--text-soft);margin-top:4px;}
+
+/* Títulos e indicadores de fluxo */
+.section-name {font-size:19px;line-height:1.35;font-weight:780;letter-spacing:-.02em;color:var(--text);margin:18px 0 10px;}
+.section-sub {font-size:13px;color:var(--muted);margin:0 0 12px;line-height:1.5;}
+.flow-grid {display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:13px 0 22px;}
+.flow-step {position:relative;overflow:hidden;border-radius:13px;border:1px solid var(--border-soft);background:linear-gradient(145deg,#182E48,#14253D);padding:17px 18px;}
+.flow-step::before {content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--state);opacity:.8;}
+.flow-step strong {display:block;color:var(--text);font-size:29px;font-weight:780;line-height:1.12;font-variant-numeric:tabular-nums;}
+.flow-step span {display:block;color:var(--muted);font-size:13px;margin-top:7px;}
+
+/* Impressoras: compactas quando inativas, com progresso quando ocupadas */
+.printer-card {box-sizing:border-box;min-height:152px;background:linear-gradient(150deg,#1B314B,#14253D);border:1px solid var(--border);border-top:3px solid var(--state);border-radius:15px;padding:17px 18px;margin:3px 0 5px;}
+.printer-card.standby-card {min-height:152px;background:linear-gradient(150deg,#15283F,#122238);border-color:#2A435F;border-top-color:#455C77;}
+.printer-top {display:flex;justify-content:space-between;align-items:center;gap:10px;}
+.printer-name {display:flex;align-items:center;gap:9px;font-size:16px;font-weight:770;color:var(--text);}
+.printer-icon {display:inline-flex;color:var(--blue);align-items:center;}
+.printer-icon svg {width:21px;height:21px;}
+.status {font-size:11px;color:var(--muted);font-weight:750;letter-spacing:.04em;white-space:nowrap;}
 .status.printing {color:var(--green);}
 .status.standby {color:var(--dim);}
-.printer-doc {color:var(--text);font-weight:700;font-size:14px;margin-top:17px;margin-bottom:4px;overflow-wrap:anywhere;}
-.printer-meta {color:var(--muted);font-size:12px;margin-top:5px;}
-.printer-reason {color:var(--dim);font-size:11px;margin-top:10px;}
-.progress-track {width:100%;height:8px;background:#0B192B;border:1px solid #294663;border-radius:99px;margin-top:14px;overflow:hidden;}
-.progress-fill {height:100%;background:var(--state);border-radius:99px;transition:width .22s ease;}
-.job-card {
-  background:linear-gradient(130deg,#1B304A,#172940);
-  border:1px solid var(--border-soft);border-left:3px solid #6DB6F8;
-  border-radius:11px;padding:11px 13px;margin-bottom:7px;
-}
+.printer-doc {font-size:16px;font-weight:720;color:var(--text);margin-top:17px;margin-bottom:5px;overflow-wrap:anywhere;line-height:1.38;}
+.printer-meta {font-size:13px;color:var(--muted);margin-top:5px;line-height:1.45;}
+.printer-reason {font-size:12px;color:var(--dim);margin-top:9px;line-height:1.45;}
+.progress-track {width:100%;height:8px;background:#091A2C;border:1px solid #315171;border-radius:999px;margin-top:12px;overflow:hidden;}
+.progress-fill {height:100%;background:linear-gradient(90deg,#4C9AE6,#95D2FF);border-radius:999px;transition:width .18s ease;}
+
+/* Fila: cartões legíveis sem aparência de planilha */
+.job-card {background:linear-gradient(130deg,#1A304B,#15283F);border:1px solid var(--border-soft);border-left:4px solid #78BEFC;border-radius:12px;padding:13px 15px;margin:0 0 8px;}
 .job-card.urgent {border-left-color:var(--orange);}
-.job-card.overdue {border-left-color:var(--red);background:#2A283A;}
-.job-top {display:flex;align-items:center;justify-content:space-between;gap:8px;}
-.job-title {color:var(--text);font-size:13px;font-weight:740;overflow-wrap:anywhere;line-height:1.3;}
-.job-meta {color:var(--muted);font-size:11px;margin-top:6px;line-height:1.5;}
-.job-tag {color:#ABD6FF;background:#213D5A;border:1px solid #315777;border-radius:100px;padding:3px 8px;font-size:10px;font-weight:700;white-space:nowrap;}
-.job-tag.urgent {color:#FFCF90;background:#49351E;border-color:#7A562B;}
-.job-tag.overdue {color:#FFC0CA;background:#512D39;border-color:#884956;}
-.number {color:#8BC7FF;font-weight:850;margin-right:10px;font-variant-numeric:tabular-nums;}
-.empty-card {background:#12233A;border:1px dashed #36526F;border-radius:12px;padding:22px 14px;color:var(--muted);text-align:center;font-size:12px;line-height:1.6;}
-.small-note {color:var(--muted);font-size:11px;margin:7px 0 13px;line-height:1.5;}
-.done-card {background:linear-gradient(145deg,#1A3047,#14263B);border:1px solid var(--border-soft);border-left:3px solid var(--green);border-radius:12px;padding:13px 15px;margin:5px 0;min-height:98px;}
-.done-title {color:var(--text);font-weight:740;font-size:13px;overflow-wrap:anywhere;}
-.done-meta {color:var(--muted);font-size:11px;margin-top:6px;line-height:1.45;}
+.job-card.overdue {border-left-color:var(--red);background:#29283E;}
+.job-top {display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.job-title {color:var(--text);font-size:15px;font-weight:740;overflow-wrap:anywhere;line-height:1.4;}
+.job-meta {color:var(--muted);font-size:13px;margin-top:6px;line-height:1.55;}
+.job-tag {color:#C1E2FF;background:#213E5C;border:1px solid #365C7F;border-radius:99px;padding:4px 9px;font-size:11px;font-weight:700;white-space:nowrap;}
+.job-tag.urgent {color:#FFE0B5;background:#48341F;border-color:#80592F;}
+.job-tag.overdue {color:#FFD1D8;background:#4E2D3C;border-color:#915063;}
+.number {color:#8BC7FF;font-weight:850;margin-right:11px;font-variant-numeric:tabular-nums;}
+.empty-card {background:#11243A;border:1px dashed #385777;border-radius:12px;padding:24px 18px;color:var(--muted);text-align:center;font-size:14px;line-height:1.6;}
+.small-note {color:var(--muted);font-size:13px;margin:10px 0 14px;line-height:1.55;}
+.done-card {background:linear-gradient(135deg,#192D46,#14263D);border:1px solid var(--border-soft);border-left:3px solid var(--green);border-radius:12px;padding:14px 16px;margin:5px 0 10px;min-height:102px;}
+.done-title {color:var(--text);font-size:15px;font-weight:740;line-height:1.4;overflow-wrap:anywhere;}
+.done-meta {color:var(--muted);font-size:13px;margin-top:6px;line-height:1.5;}
 .done-bad {color:var(--red);}
 .done-good {color:var(--green);}
-.forecast-box {background:#182C44;border:1px solid var(--border-soft);border-radius:12px;padding:12px 14px;margin:10px 0 8px;}
+.forecast-box {background:#182C44;border:1px solid var(--border-soft);border-radius:12px;padding:14px 15px;margin:11px 0;}
 .forecast-box.risk {border-left:3px solid var(--orange);}
 .forecast-box.safe {border-left:3px solid var(--green);}
-.forecast-title {color:var(--text);font-size:13px;font-weight:760;}
-.forecast-description {color:var(--muted);font-size:11px;margin-top:6px;line-height:1.5;}
-.preventive-note {color:#A5D6FF;font-size:12px;margin-top:8px;}
-/* Componentes nativos Streamlit. Um tema escuro real, não só cartões escuros. */
-.stApp [data-testid="stVerticalBlockBorderWrapper"] > div:has(> [data-testid="stVerticalBlock"]) {border-radius:13px;}
-.stApp [data-testid="stMetric"] {
-  background:#182D45; border:1px solid var(--border-soft); border-radius:12px;
-  padding:11px 12px;
-}
-.stApp [data-testid="stMetricLabel"] p {color:var(--muted) !important;font-size:12px;}
+.forecast-title {color:var(--text);font-size:14px;font-weight:730;line-height:1.4;}
+.forecast-description {color:var(--muted);font-size:13px;margin-top:6px;line-height:1.55;}
+.preventive-note {color:#B5DDFF;font-size:13px;margin-top:9px;}
+
+/* Estilo dos componentes nativos do Streamlit: manter o tom escuro.
+   Usar as configurações do tema para tipografia base; CSS apenas onde necessário. */
+.stApp [data-testid="stMetric"] {background:#182D45;border:1px solid var(--border-soft);border-radius:12px;padding:14px 15px;}
+.stApp [data-testid="stMetricLabel"] p {color:var(--muted) !important;font-size:13px;}
 .stApp [data-testid="stMetricValue"] {color:var(--text) !important;}
-.stApp [data-testid="stExpander"] {
-  background:#14263D !important;border:1px solid var(--border) !important;
-  border-radius:12px !important;overflow:hidden;
-}
-.stApp [data-testid="stExpander"] summary, .stApp [data-testid="stExpander"] summary p {color:var(--text-soft) !important;}
-.stApp [data-testid="stExpander"] summary:hover {background:#1C3450;}
-.stApp [data-testid="stForm"] {background:#14263D;border:1px solid var(--border) !important;border-radius:13px;padding:12px;}
-/* Botões: padrão deliberadamente claro sobre escuro, sem vazamentos pretos. */
+.stApp [data-testid="stExpander"] {background:#14263D !important;border:1px solid var(--border) !important;border-radius:12px !important;overflow:hidden;}
+.stApp [data-testid="stExpander"] summary, .stApp [data-testid="stExpander"] summary p {color:var(--text-soft) !important;font-size:14px;}
+.stApp [data-testid="stExpander"] summary:hover {background:#213953;}
+.stApp [data-testid="stForm"] {background:#14263D;border:1px solid var(--border) !important;border-radius:13px;padding:15px;}
+.stApp [data-testid="stWidgetLabel"] p {font-size:14px;color:var(--text-soft) !important;}
+
+/* Botões: contraste legível nos estados normal, hover, disabled e primary */
 .stApp .stButton button,
 .stApp .stFormSubmitButton button,
 .stApp .stDownloadButton button,
 .stApp [data-testid="stPopover"] > button,
 .stApp button[data-testid^="stBaseButton"] {
-  background:#1C3550 !important;
-  color:#F0F7FF !important;
-  border:1px solid #426180 !important;
+  background:#213D5A !important;
+  color:#F3F8FE !important;
+  border:1px solid #46698B !important;
   border-radius:10px !important;
   box-shadow:none !important;
-  font-weight:650 !important;
-  min-height:40px;
-  transition:background .15s ease,border-color .15s ease;
+  font-size:14px !important;
+  font-weight:660 !important;
+  min-height:43px;
+  transition:background .16s ease,border-color .16s ease;
 }
 .stApp .stButton button *, .stApp .stFormSubmitButton button *,
 .stApp .stDownloadButton button *, .stApp [data-testid="stPopover"] > button *,
 .stApp button[data-testid^="stBaseButton"] * {color:inherit !important;}
-.stApp .stButton button:hover:not(:disabled),
-.stApp .stFormSubmitButton button:hover:not(:disabled),
-.stApp .stDownloadButton button:hover:not(:disabled),
-.stApp [data-testid="stPopover"] > button:hover:not(:disabled),
+.stApp .stButton button:hover:not(:disabled), .stApp .stFormSubmitButton button:hover:not(:disabled),
+.stApp .stDownloadButton button:hover:not(:disabled), .stApp [data-testid="stPopover"] > button:hover:not(:disabled),
 .stApp button[data-testid^="stBaseButton"]:hover:not(:disabled) {
-  background:#284766 !important;color:#FFFFFF !important;border-color:#76B5ED !important;
+  background:#2B5278 !important;color:#FFF !important;border-color:#86C6FF !important;
 }
 .stApp .stButton button:focus-visible,
 .stApp .stFormSubmitButton button:focus-visible,
-.stApp [data-testid="stPopover"] > button:focus-visible {outline:2px solid #8AC9FF; outline-offset:2px;}
-.stApp .stButton button:active:not(:disabled),
-.stApp .stFormSubmitButton button:active:not(:disabled) {background:#305778 !important;}
+.stApp [data-testid="stPopover"] > button:focus-visible {outline:2px solid #9AD2FF;outline-offset:2px;}
 .stApp .stButton button[kind="primary"],
 .stApp .stFormSubmitButton button[kind="primary"],
-.stApp button[data-testid="stBaseButton-primary"] {
-  background:#69B5F5 !important;color:#071728 !important;border-color:#69B5F5 !important;
-}
+.stApp button[data-testid="stBaseButton-primary"] {background:#7ABDF6 !important;color:#07192B !important;border-color:#7ABDF6 !important;}
 .stApp .stButton button[kind="primary"]:hover:not(:disabled),
 .stApp .stFormSubmitButton button[kind="primary"]:hover:not(:disabled),
-.stApp button[data-testid="stBaseButton-primary"]:hover:not(:disabled) {
-  background:#9AD1FF !important;color:#071728 !important;border-color:#9AD1FF !important;
-}
-.stApp .stButton button:disabled,
-.stApp .stFormSubmitButton button:disabled,
-.stApp button[data-testid^="stBaseButton"]:disabled {
-  background:#17293F !important;color:#7F98B2 !important;border-color:#2A4057 !important;opacity:1 !important;cursor:not-allowed;
-}
-/* O único popover do sistema é o reinício: aviso discreto de ação destrutiva. */
-.stApp [data-testid="stPopover"] > button {
-  background:#352738 !important; color:#FFC0CB !important;
-  border-color:#815367 !important;
-}
-.stApp [data-testid="stPopover"] > button:hover:not(:disabled) {
-  background:#492E42 !important; color:#FFDBE1 !important;
-  border-color:#C17E96 !important;
-}
-/* Inputs, seletores, popovers e tabelas seguem a mesma paleta. */
+.stApp button[data-testid="stBaseButton-primary"]:hover:not(:disabled) {background:#A9DBFF !important;color:#07192B !important;border-color:#A9DBFF !important;}
+.stApp .stButton button:disabled,.stApp .stFormSubmitButton button:disabled,
+.stApp button[data-testid^="stBaseButton"]:disabled {background:#172B43 !important;color:#8DA4BD !important;border-color:#304A65 !important;opacity:1 !important;}
+.stApp [data-testid="stPopover"] > button {background:#3B2B39 !important;color:#FFD4DF !important;border-color:#875C70 !important;}
+.stApp [data-testid="stPopover"] > button:hover:not(:disabled) {background:#57384C !important;color:#FFE4EC !important;border-color:#C787A3 !important;}
+
+/* Inputs: impede o tom amarronzado observado nos prints do deploy. */
 .stApp [data-baseweb="input"],
+.stApp [data-baseweb="input"] > div,
 .stApp [data-baseweb="textarea"],
 .stApp [data-baseweb="select"] > div,
+.stApp [data-testid="stTextInput"] input,
+.stApp [data-testid="stNumberInput"] input,
 .stApp [data-baseweb="popover"] {
-  background-color:#1A3049 !important;color:var(--text) !important;border-color:#40607C !important;
+  background:#1B3551 !important;color:var(--text) !important;border-color:#4A6D90 !important;
 }
 .stApp [data-baseweb="input"] input,
 .stApp [data-baseweb="textarea"] textarea,
 .stApp [data-baseweb="select"] input,
-.stApp [data-baseweb="select"] span {color:var(--text) !important;-webkit-text-fill-color:var(--text) !important;}
+.stApp [data-baseweb="select"] span,
+.stApp [data-testid="stNumberInput"] input {color:var(--text) !important;-webkit-text-fill-color:var(--text) !important;}
 .stApp [data-baseweb="input"] input::placeholder,
-.stApp [data-baseweb="textarea"] textarea::placeholder {color:#8CA5BF !important;-webkit-text-fill-color:#8CA5BF !important;}
-.stApp [data-testid="stNumberInput"] button {background:#1A3049 !important;color:var(--text-soft) !important;border-color:#40607C !important;}
-.stApp [data-testid="stSelectbox"] label p,
-.stApp [data-testid="stTextInput"] label p,
-.stApp [data-testid="stNumberInput"] label p {color:var(--text-soft) !important;font-weight:550;}
+.stApp [data-baseweb="textarea"] textarea::placeholder {color:#AFBED0 !important;-webkit-text-fill-color:#AFBED0 !important;}
+.stApp [data-testid="stNumberInput"] button {background:#254361 !important;color:var(--text) !important;border-color:#4A6D90 !important;}
 .stApp [data-testid="stDataFrame"] {border:1px solid var(--border);border-radius:10px;overflow:hidden;}
 .stApp [data-testid="stTabs"] button {color:var(--muted) !important;}
 .stApp [data-testid="stTabs"] button[aria-selected="true"] {color:var(--blue) !important;border-bottom-color:var(--blue) !important;}
-.stApp [data-testid="stMarkdownContainer"] code {background:#1C3550;color:#C6E5FF;}
-/* Acessibilidade e telas menores. */
-@media (max-width: 850px) {
-  .block-container {padding-left:1.15rem;padding-right:1.15rem;}
-  .brand-title {font-size:19px;}
-  .logo-frame {width:108px;height:43px;}
-  .brand {gap:10px;}
-  .clock-time {font-size:23px;}
+.stApp [data-testid="stMarkdownContainer"] code {background:#223F5B;color:#D2E9FF;}
+@media (max-width: 920px) {
+  .block-container {padding:3.6rem 1.25rem 2.5rem !important;}
   .flow-grid {grid-template-columns:repeat(2,minmax(0,1fr));}
 }
-@media (max-width: 520px) {
-  .header-band {padding:12px;gap:9px;}
-  .brand-subtitle {font-size:10px;}
-  .brand-title {font-size:17px;}
-  .logo-frame {width:85px;height:39px;padding:4px;}
-  .logo-oficial {inset:4px;width:calc(100% - 8px);height:calc(100% - 8px);}
-  .clock-label {font-size:8px;}
-  .clock-time {font-size:20px;}
-  .flow-step {padding:11px;}
+@media (max-width: 640px) {
+  .block-container {padding:3.4rem .85rem 2rem !important;}
+  .header-band {flex-wrap:wrap;padding:14px;gap:12px;}
+  .brand {gap:10px;}
+  .logo-frame {width:112px;height:46px;padding:5px 8px;}
+  .logo-oficial {max-height:36px;}
+  .brand-title {font-size:20px;}
+  .brand-subtitle {font-size:12px;}
+  .clock {text-align:left;min-width:0;}
+  .clock-time {font-size:26px;}
+  .flow-step {padding:14px;}
+  .flow-step strong {font-size:25px;}
+  .job-title {font-size:14px;}
+  .job-meta {font-size:12px;}
 }
 """
 st.markdown("<style>" + CSS_TEMA.replace("__STATE_COLOR__", modo["cor"]).replace("__STATE_SOFT__", modo["leve"]) + "</style>", unsafe_allow_html=True)
@@ -340,7 +318,7 @@ for n, coluna in enumerate(colunas_imp, 1):
     imp = sim.impressoras[n]
     estado_imp = sim.status_impressora(n)
     if estado_imp == "STANDBY":
-        conteudo = '<div class="printer-doc">Em espera</div><div class="printer-meta">Ativa automaticamente quando a demanda aumenta.</div>'
+        conteudo = '<div class="printer-doc">Em espera</div><div class="printer-meta">Ativação automática conforme a demanda.</div>'
         situacao = 'STANDBY'
         classe = 'standby'
     elif imp.documento_id is None:
@@ -364,14 +342,15 @@ for n, coluna in enumerate(colunas_imp, 1):
         nome_imp = 'Impressora 2 · Preventiva'
     else:
         nome_imp = f'Impressora {n}'
-    coluna.markdown(f'<div class="printer-card"><div class="printer-top"><div class="printer-name"><span class="printer-icon">{ICONE_IMPRESSORA}</span> {seguro(nome_imp)}</div>'
+    coluna.markdown(f'<div class="printer-card {"standby-card" if estado_imp == "STANDBY" else ""}"><div class="printer-top"><div class="printer-name"><span class="printer-icon">{ICONE_IMPRESSORA}</span> {seguro(nome_imp)}</div>'
                    f'<div class="status {classe}">● {situacao}</div></div>{conteudo}</div>', unsafe_allow_html=True)
 
 area_principal, area_lateral = st.columns([1.75, 1], gap="large")
 with area_principal:
     st.markdown(f'<div class="section-name">Fila de espera <span style="color:var(--muted);font-size:13px;font-weight:500">· {len(sim.fila)} documentos</span></div>', unsafe_allow_html=True)
     st.markdown('<div class="section-sub">Maior prioridade → menos páginas → chegada mais antiga → ID</div>', unsafe_allow_html=True)
-    with st.container(height=390, border=False):
+    fila_container = st.container(height=420, border=False) if len(sim.fila) > 6 else st.container(border=False)
+    with fila_container:
         fila = sim.fila_ordenada()
         if not fila:
             st.markdown('<div class="empty-card">Nenhum documento aguardando. Experimente adicionar um pedido.</div>', unsafe_allow_html=True)
@@ -390,7 +369,9 @@ with area_principal:
                 st.rerun()
 with area_lateral:
     st.markdown('<div class="section-name">Agendados</div>', unsafe_allow_html=True)
-    with st.container(height=190, border=False):
+    agendados_container = (st.container(height=250, border=False)
+                           if len(sim.documentos_agendados()) > 4 else st.container(border=False))
+    with agendados_container:
         agendados = sim.documentos_agendados()
         if not agendados:
             st.markdown('<div class="empty-card">Sem chegadas futuras.</div>', unsafe_allow_html=True)
