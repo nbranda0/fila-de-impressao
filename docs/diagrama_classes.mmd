@@ -1,0 +1,52 @@
+classDiagram
+    class Documento {
+        +int codigo
+        +str nome
+        +int paginas
+        +str categoria
+        +int chegada
+        +str status
+        +int inicio
+        +int conclusao
+        +bool sla_cumprido
+        +str justificativa
+    }
+    class Evento {
+        +int minuto
+        +int ordem_tipo
+        +int sequencia
+        +str tipo
+        +int codigo
+        +int impressora_id
+    }
+    class Impressora {
+        +int identificador
+        +int documento_id
+        +int inicio
+        +int fim_previsto
+    }
+    class SimuladorImpressao {
+        +int minuto_atual
+        +dict documentos
+        +list fila
+        +list historico
+        +str estado
+        +bool apoio_preditivo
+        +bool _apoio_preventivo
+        +prever_slas()
+        +_projetar_inicios()
+        +_avaliar_apoio_preventivo()
+        +agendar_documento()
+        +adicionar_lote()
+        +avancar()
+        +proximo_evento()
+        +cancelar()
+        +desfazer()
+        +prioridade()
+        +fila_ordenada()
+        +exportar_sql()
+    }
+    SimuladorImpressao "1" *-- "2" Impressora : gerencia
+    SimuladorImpressao "1" *-- "0..*" Documento : registros
+    SimuladorImpressao "1" *-- "0..*" Evento : agenda
+    Impressora "1" --> "0..1" Documento : imprime
